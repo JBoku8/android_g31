@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">Email_Password_Firebase_G31</string>
+    <string name="regPageTitle">რეგისტრაცია</string>
+    <string name="loginPageTitle">სისტემაში შესვლა</string>
+    <string name="resetPageTitle">პაროლის აღდგენა</string>
+    <string name="passwordHint">პაროლი</string>
+    <string name="emailHint">ელ.ფოსტა</string>
+    <string name="regButtonText">დარეგისტრირება</string>
+    <string name="or">ან</string>
+    <string name="loginButtonText">ავტორიზაცია</string>
+    <string name="goBack">უკან დაბრუნება</string>
+    <string name="signOut">გასვლა სისტემიდან</string>
+    <string name="forgotPassword">დაგავიწყდათ პაროლი?</string>
+    <string name="confirmPasswordReset">მეილის დადასუტურება</string>
+</resources>
