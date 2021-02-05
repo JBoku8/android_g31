@@ -22,7 +22,8 @@ import com.google.firebase.ktx.Firebase
 
 data class Note(
     val status: String = "",
-    val title: String = ""
+    val title: String = "",
+    val uid: String = ""
 )
 
 class NoteViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
@@ -63,6 +64,9 @@ class MainActivity : AppCompatActivity() {
 
                 holder.itemView.setOnClickListener {
                     Log.i("MainActivity", "CLICKED ${model.title}")
+                    Log.i("NOTE", model.uid)
+
+//                     fireStore.collection("notes").document(model.uid).delete()
                 }
             }
         }
@@ -91,11 +95,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showActionDialog() {
-        val editText = EditText(this)
+        val dialogView = layoutInflater.inflate(R.layout.add_dialog, null)
+
+        val displayNameEditText = dialogView.findViewById<EditText>(R.id.displayNameEditText)
+        val stateEditText = dialogView.findViewById<EditText>(R.id.stateEditText)
 
         val dialog = AlertDialog.Builder(this)
             .setTitle("Create a Note")
-            .setView(editText)
+            .setView(dialogView)
             .setNegativeButton("Cancel", null)
             .setPositiveButton("OK", null)
             .show()
@@ -104,19 +111,31 @@ class MainActivity : AppCompatActivity() {
         dialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener {
             Log.i("MAIN_ACTIVITY", "Clicked on positive button!")
 
-            val titleText = editText.text.toString()
-            if (titleText.isBlank()) {
-                Toast.makeText(this, "Cannot submit empty text", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
+
             val currentUser = auth.currentUser
             if (currentUser == null) {
                 Toast.makeText(this, "No signed in user", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
-            Toast.makeText(this, titleText.toString(), Toast.LENGTH_SHORT).show()
-//            fireStore.collection("notes").add()
+            val displayName = displayNameEditText.text.toString()
+            val stateText = stateEditText.text.toString()
+            if (displayName.isBlank() || stateText.isBlank()) {
+                Toast.makeText(this, "Cannot submit empty text", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+
+//            Toast.makeText(this, titleText.toString(), Toast.LENGTH_SHORT).show()
+
+            val newNote = Note(stateText, displayName)
+
+            fireStore.collection("notes").add(newNote).addOnSuccessListener { task ->
+                Log.i("MAIN_ACTIVITY_OK", "note added")
+            }.addOnFailureListener{
+                    e ->
+                Log.e("MAIN_ACTIVITY_EX", e.message.toString())
+            }
             dialog.dismiss()
         }
     }
